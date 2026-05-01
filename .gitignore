@@ -44,3 +44,11 @@ venv/
 # Misc
 .cache/
 coverage/
+
+# Database
+*.db
+*.db-journal
+data/
+
+# Package locks (optional - team preference)
+package-lock.json
