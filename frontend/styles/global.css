@@ -227,4 +227,56 @@ body {
   }
 }
 
+/* Animated Gradient Border for Feature Cards */
+.card {
+  position: relative;
+  background: white;
+  border: 1px solid var(--color-border);
+  transition: border-color 0.3s ease;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    #00f0ff,
+    #ff00ff,
+    #00f0ff
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+  animation-play-state: paused;
+}
+
+.card:hover {
+  border-color: transparent;
+}
+
+.card:hover::before {
+  opacity: 1;
+  animation-play-state: running;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 /* Made with Bob */
