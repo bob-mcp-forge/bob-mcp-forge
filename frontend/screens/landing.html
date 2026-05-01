@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bob MCP Forge - Landing</title>
+  <link rel="stylesheet" href="../styles/global.css">
+  <link rel="stylesheet" href="../styles/design-system.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="app-header">
+      <a href="../index.html" class="app-logo">
+        <div class="app-logo-icon">B</div>
+        <span>Bob MCP Forge</span>
+      </a>
+      <nav class="app-nav">
+        <a href="../index.html" class="nav-link">Home</a>
+        <a href="../documentation.html" class="nav-link">Documentation</a>
+        <a href="#" class="nav-link">Examples</a>
+        <a href="https://github.com/bob-mcp-forge/bob-mcp-forge" class="nav-link" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="app-main">
+      <div class="screen screen-centered">
+        <div style="max-width: 800px; width: 100%;">
+          
+          <!-- Hero Section -->
+          <div style="text-align: center; margin-bottom: var(--space-8);">
+            <h1 style="font-size: var(--font-size-4xl); font-weight: 700; margin-bottom: var(--space-2); line-height: 1.2;">
+              Build MCP Servers with AI
+            </h1>
+            <p style="font-size: var(--font-size-xl); color: var(--color-text-secondary); margin-bottom: var(--space-1);">
+              Describe your tool in plain English. Get production-ready MCP server code with built-in compliance checks.
+            </p>
+          </div>
+
+          <!-- Main Input Card -->
+          <div class="card" style="padding: var(--space-4); margin-bottom: var(--space-4);">
+            
+            <!-- Prompt Input -->
+            <div style="margin-bottom: var(--space-3);">
+              <label for="prompt-input" style="display: block; font-weight: 500; margin-bottom: var(--space-2); font-size: var(--font-size-base);">
+                Describe your MCP tool
+              </label>
+              <textarea 
+                id="prompt-input" 
+                class="input textarea" 
+                placeholder="Example: Create an MCP server that fetches weather data from OpenWeather API, caches results for 10 minutes, and provides tools for current weather and 5-day forecast..."
+                style="min-height: 160px; font-size: var(--font-size-base);"
+              ></textarea>
+            </div>
+
+            <!-- Compliance Profile -->
+            <div style="margin-bottom: var(--space-4);">
+              <label for="compliance-select" style="display: block; font-weight: 500; margin-bottom: var(--space-2); font-size: var(--font-size-base);">
+                Compliance Profile
+              </label>
+              <select id="compliance-select" class="input select">
+                <option value="general">General - Standard best practices</option>
+                <option value="gdpr">GDPR - EU data protection compliance</option>
+                <option value="soc2">SOC 2 - Security and availability controls</option>
+                <option value="hipaa">HIPAA - Healthcare data protection</option>
+              </select>
+            </div>
+
+            <!-- Generate Button -->
+            <button class="btn btn-primary btn-lg w-full" id="generate-btn">
+              <span>Generate MCP Server</span>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Example Prompts -->
+          <div style="margin-bottom: var(--space-6);">
+            <h3 style="font-size: var(--font-size-sm); font-weight: 600; color: var(--color-text-secondary); margin-bottom: var(--space-2); text-transform: uppercase; letter-spacing: 0.5px;">
+              Example Prompts
+            </h3>
+            <div style="display: grid; gap: var(--space-2);">
+              
+              <button class="card card-hover example-prompt" style="text-align: left; border: 1px solid var(--color-border); cursor: pointer; padding: var(--space-2);">
+                <div style="font-weight: 500; margin-bottom: 4px; font-size: var(--font-size-sm);">
+                  Database Query Tool
+                </div>
+                <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+                  Create an MCP server that connects to PostgreSQL, executes read-only queries, and returns results in JSON format
+                </div>
+              </button>
+
+              <button class="card card-hover example-prompt" style="text-align: left; border: 1px solid var(--color-border); cursor: pointer; padding: var(--space-2);">
+                <div style="font-weight: 500; margin-bottom: 4px; font-size: var(--font-size-sm);">
+                  File System Manager
+                </div>
+                <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+                  Build an MCP server for safe file operations: read, write, list directories with permission checks and size limits
+                </div>
+              </button>
+
+              <button class="card card-hover example-prompt" style="text-align: left; border: 1px solid var(--color-border); cursor: pointer; padding: var(--space-2);">
+                <div style="font-weight: 500; margin-bottom: 4px; font-size: var(--font-size-sm);">
+                  API Integration Hub
+                </div>
+                <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+                  Create an MCP server that integrates with Stripe API for payment processing, subscription management, and webhook handling
+                </div>
+              </button>
+
+            </div>
+          </div>
+
+          <!-- Features Grid -->
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); margin-bottom: var(--space-4);">
+            
+            <div style="text-align: center;">
+              <div style="width: 48px; height: 48px; background: var(--color-primary-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-2);">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="var(--color-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div style="font-weight: 600; margin-bottom: 4px; font-size: var(--font-size-sm);">AI-Powered</div>
+              <div style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">Generate complete servers in seconds</div>
+            </div>
+
+            <div style="text-align: center;">
+              <div style="width: 48px; height: 48px; background: var(--color-success-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-2);">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="var(--color-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div style="font-weight: 600; margin-bottom: 4px; font-size: var(--font-size-sm);">Compliance Ready</div>
+              <div style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">Built-in security and policy checks</div>
+            </div>
+
+            <div style="text-align: center;">
+              <div style="width: 48px; height: 48px; background: var(--color-info-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-2);">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16" stroke="var(--color-info)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div style="font-weight: 600; margin-bottom: 4px; font-size: var(--font-size-sm);">One-Click Deploy</div>
+              <div style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">Deploy to IBM Cloud instantly</div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Example prompt click handlers
+    document.querySelectorAll('.example-prompt').forEach(button => {
+      button.addEventListener('click', function() {
+        const promptText = this.querySelector('div:last-child').textContent;
+        document.getElementById('prompt-input').value = promptText;
+      });
+    });
+
+    // Generate button handler
+    document.getElementById('generate-btn').addEventListener('click', function() {
+      const prompt = document.getElementById('prompt-input').value;
+      const compliance = document.getElementById('compliance-select').value;
+      
+      if (!prompt.trim()) {
+        alert('Please enter a prompt describing your MCP tool');
+        return;
+      }
+      
+      // Navigate to progress screen
+      window.location.href = 'progress.html';
+    });
+  </script>
+</body>
+</html>
