@@ -189,9 +189,7 @@ backend/api/
 │   │   ├── compliance.js   # Calls Anthony's policy engine
 │   │   └── deploy.js       # IBM Cloud deployment
 │   └── db/
-│       └── database.js     # SQLite database setup
-├── data/
-│   └── jobs.db             # SQLite database file (auto-created)
+│       └── database.js     # MongoDB connection
 ├── package.json
 ├── .env                    # Environment variables
 └── README.md
@@ -208,8 +206,8 @@ See `.env` file:
 PORT=3000
 NODE_ENV=development
 
-# Database
-DATABASE_PATH=./data/jobs.db
+# Database - MongoDB Atlas
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database-name
 
 # Service URLs (update when services are ready)
 GENERATOR_SERVICE_URL=http://localhost:3001
@@ -225,44 +223,48 @@ IBM_CLOUD_REGION=us-south
 
 ## Database Schema
 
-The API uses SQLite with the following schema:
+The API uses **MongoDB Atlas** with Mongoose. The Job schema:
 
-```sql
-CREATE TABLE jobs (
-  job_id TEXT PRIMARY KEY,
-  user_id TEXT,
-  description TEXT NOT NULL,
-  compliance_profile TEXT DEFAULT 'general',
-  status TEXT NOT NULL DEFAULT 'queued',
-  progress INTEGER DEFAULT 0,
+```javascript
+{
+  jobId: String (unique, indexed),
+  userId: String (indexed),
+  description: String (required),
+  complianceProfile: String (enum: general, gdpr, soc2, hipaa),
+  status: String (indexed, enum: queued, generating, etc.),
+  progress: Number (0-100),
   
-  -- Stage tracking
-  generation_status TEXT,
-  generation_started_at TEXT,
-  generation_completed_at TEXT,
-  
-  compliance_status TEXT,
-  compliance_started_at TEXT,
-  compliance_completed_at TEXT,
-  
-  deployment_status TEXT,
-  deployment_started_at TEXT,
-  deployment_completed_at TEXT,
+  // Stage tracking
+  stages: {
+    generation: {
+      status: String,
+      startedAt: Date,
+      completedAt: Date
+    },
+    compliance: { ... },
+    deployment: { ... }
+  },
   
   -- Data (stored as JSON)
   generated_code TEXT,
-  compliance_report TEXT,
-  deployment_info TEXT,
+  // Data (stored as nested objects)
+  data: {
+    generatedCode: { files: [...], schema: {...}, metadata: {...} },
+    complianceReport: { overallStatus, rules: [...] },
+    deployment: { url, region, status, deployedAt, health }
+  },
   
-  -- Error tracking
-  error_message TEXT,
-  error_code TEXT,
-  error_stage TEXT,
+  // Error tracking
+  error: {
+    message: String,
+    code: String,
+    stage: String
+  },
   
-  -- Timestamps
-  created_at TEXT NOT NULL,
-  updated_at TEXT NOT NULL
-);
+  // Timestamps (auto-managed by Mongoose)
+  createdAt: Date,
+  updatedAt: Date
+}
 ```
 
 ---
@@ -271,7 +273,7 @@ CREATE TABLE jobs (
 
 **Completed:**
 - [x] Express server setup
-- [x] SQLite database with jobs table
+- [x] MongoDB Atlas connection with Mongoose
 - [x] Job model with CRUD operations
 - [x] POST /api/v1/generate endpoint
 - [x] GET /api/v1/jobs/:jobId endpoint
@@ -361,8 +363,11 @@ async function checkCompliance(code, policies) {
 
 ## Troubleshooting
 
-### Database locked error
-If you see "database is locked", make sure only one instance of the server is running.
+### MongoDB connection error
+If you see "MongoDB connection error", check:
+- Your MONGODB_URI in `.env` is correct
+- MongoDB Atlas IP whitelist includes your IP (or 0.0.0.0/0 for testing)
+- Username and password are correct
 
 ### Port already in use
 Change the PORT in `.env` or kill the process using port 3000:
