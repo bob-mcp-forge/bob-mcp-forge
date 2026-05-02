@@ -52,6 +52,7 @@ data/
 
 # Package locks (optional - team preference)
 package-lock.json
+!backend/generator/package-lock.json
 
 # Local Tooling & Generated Output
 .atl/
@@ -62,3 +63,4 @@ package-lock.json
 .agents/
 backend/generator/generated/
 GLOBAL_ALIASES.txt
+/CLAUDE.md
