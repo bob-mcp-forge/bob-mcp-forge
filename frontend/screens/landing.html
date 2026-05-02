@@ -3,16 +3,326 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bob MCP Forge - Landing</title>
+  <title>Bob MCP Forge - Build MCP Servers with AI</title>
   <link rel="stylesheet" href="../styles/global.css">
   <link rel="stylesheet" href="../styles/design-system.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* Premium Section Transitions */
+    .section {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .section.visible { opacity: 1; transform: translateY(0); }
+    .section.hidden { display: none; }
+    
+    /* Example Prompt Chips - Premium Hover */
+    .example-prompt {
+      position: relative;
+      overflow: hidden;
+    }
+    .example-prompt::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+      transition: left 0.5s;
+    }
+    .example-prompt:hover::before {
+      left: 100%;
+    }
+    .example-prompt:hover {
+      background: var(--color-surface) !important;
+      border-color: var(--color-primary) !important;
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    
+    /* Feature Cards - Premium Elevation */
+    .feature-card {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .feature-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--gradient-primary);
+      transform: scaleX(0);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .feature-card:hover::after {
+      transform: scaleX(1);
+    }
+    .feature-card:hover {
+      box-shadow: var(--shadow-xl);
+      transform: translateY(-6px);
+    }
+    
+    /* Premium Progress Steps */
+    .progress-steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-8);
+      padding: var(--space-4);
+      background: var(--color-surface);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-sm);
+    }
+    .progress-step { display: flex; align-items: center; gap: var(--space-2); }
+    .step-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: var(--font-size-base);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+    .step-circle.pending {
+      background: var(--color-bg-secondary);
+      color: var(--color-text-tertiary);
+      border: 2px solid var(--color-border);
+    }
+    .step-circle.active {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: 0 0 0 4px var(--color-primary-light), var(--shadow-md);
+      animation: pulse-glow 2s infinite;
+    }
+    .step-circle.complete {
+      background: var(--gradient-success);
+      color: white;
+      box-shadow: var(--shadow-sm);
+    }
+    .step-label {
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      transition: all 0.3s;
+    }
+    .step-label.active {
+      color: var(--color-text-primary);
+      font-weight: 600;
+    }
+    .step-arrow {
+      color: var(--color-border-strong);
+      font-size: 20px;
+      transition: color 0.3s;
+    }
+    
+    .btn.loading { position: relative; color: transparent; pointer-events: none; }
+    .btn.loading::after { content: ''; position: absolute; width: 20px; height: 20px; top: 50%; left: 50%; margin-left: -10px; margin-top: -10px; border: 2px solid transparent; border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    .btn.completed { background: var(--color-success); border-color: var(--color-success); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    .file-tree { list-style: none; padding: 0; margin: 0; }
+    .file-tree-item { padding: var(--space-1) var(--space-2); cursor: pointer; border-radius: var(--radius-sm); font-size: var(--font-size-sm); display: flex; align-items: center; gap: var(--space-1); transition: background var(--transition-fast); }
+    .file-tree-item:hover { background: var(--color-surface-hover); }
+    .file-tree-item.active { background: var(--color-primary-light); color: var(--color-primary); font-weight: 500; }
+    .file-icon { width: 16px; height: 16px; flex-shrink: 0; }
+    
+    .code-viewer { background: #1e1e1e; color: #d4d4d4; font-family: var(--font-mono); font-size: 14px; line-height: 1.6; padding: var(--space-3); border-radius: var(--radius-lg); overflow-x: auto; max-height: 400px; overflow-y: auto; }
+    .code-line { display: flex; gap: var(--space-3); }
+    .line-number { color: #858585; text-align: right; min-width: 40px; user-select: none; }
+    .line-content { flex: 1; }
+    .keyword { color: #569cd6; }
+    .string { color: #ce9178; }
+    .comment { color: #6a9955; }
+    .function { color: #dcdcaa; }
+    
+    /* Premium Compliance Summary */
+    .compliance-summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
+    }
+    .summary-card {
+      text-align: center;
+      padding: var(--space-4);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .summary-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+    .summary-value {
+      font-size: var(--font-size-4xl);
+      font-weight: 700;
+      margin-bottom: var(--space-2);
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .summary-label {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+    .score-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-size-3xl);
+      font-weight: 700;
+      margin: 0 auto var(--space-2);
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+    }
+    .score-circle::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      opacity: 0.2;
+      z-index: -1;
+    }
+    
+    /* Premium Issue Items with Icons */
+    .issue-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      padding: var(--space-3);
+      border-left: 4px solid;
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-3);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow-sm);
+    }
+    .issue-item:hover {
+      transform: translateX(4px);
+      box-shadow: var(--shadow-md);
+    }
+    .issue-item.critical {
+      border-left-color: var(--color-error);
+      background: linear-gradient(to right, var(--color-error-light), var(--color-surface));
+    }
+    .issue-item.warning {
+      border-left-color: var(--color-warning);
+      background: linear-gradient(to right, var(--color-warning-light), var(--color-surface));
+    }
+    .issue-item.resolved {
+      border-left-color: var(--color-success);
+      background: linear-gradient(to right, var(--color-success-light), var(--color-surface));
+      opacity: 0.8;
+    }
+    .issue-item.fixing { opacity: 0.6; }
+    .issue-title { font-weight: 600; font-size: var(--font-size-base); margin-bottom: 6px; }
+    .issue-description { font-size: var(--font-size-sm); color: var(--color-text-secondary); line-height: 1.5; }
+    
+    .fix-progress {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      margin-top: var(--space-2);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .fix-progress .spinner { width: 16px; height: 16px; border-width: 2px; }
+    
+    /* Premium Success Banner */
+    .ready-banner {
+      background: var(--gradient-success);
+      border: none;
+      border-radius: var(--radius-xl);
+      padding: var(--space-4);
+      margin-bottom: var(--space-6);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      animation: slideDown 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow-lg);
+      color: white;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    
+    /* Premium Deployment Success */
+    .deployment-status {
+      text-align: center;
+      padding: var(--space-6);
+      animation: scale-in 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .status-icon {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto var(--space-4);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--gradient-success);
+      color: white;
+      box-shadow: 0 0 0 12px var(--color-success-light), var(--shadow-xl);
+      animation: bounce-subtle 2s infinite;
+    }
+    .url-display {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3);
+      background: var(--color-surface);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      font-family: var(--font-mono);
+      font-size: var(--font-size-sm);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s;
+    }
+    .url-display:hover {
+      border-color: var(--color-primary);
+      box-shadow: var(--shadow-md);
+    }
+    .url-text {
+      flex: 1;
+      color: var(--color-primary);
+      word-break: break-all;
+      font-weight: 500;
+    }
+    
+    .split-layout { display: grid; grid-template-columns: 280px 1fr; gap: var(--space-4); min-height: 400px; }
+    .sidebar-panel { background: var(--color-bg-secondary); border-radius: var(--radius-lg); padding: var(--space-3); }
+    .content-panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-3); }
+    
+    @media (max-width: 768px) {
+      .split-layout { grid-template-columns: 1fr; }
+      .compliance-summary { grid-template-columns: repeat(2, 1fr); }
+      .progress-steps { flex-direction: column; }
+      .step-arrow { transform: rotate(90deg); }
+    }
+  </style>
 </head>
 <body>
   <div id="app">
-    <!-- Header -->
     <header class="app-header">
       <a href="../index.html" class="app-logo">
         <div class="app-logo-icon">B</div>
@@ -22,133 +332,335 @@
         <a href="../index.html" class="nav-link">Home</a>
         <a href="../documentation.html" class="nav-link">Documentation</a>
         <a href="#" class="nav-link">Examples</a>
-        <a href="https://github.com/bob-mcp-forge/bob-mcp-forge" class="nav-link" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://github.com/bob-mcp-forge/bob-mcp-forge" class="nav-link" target="_blank">GitHub</a>
       </nav>
     </header>
 
-    <!-- Main Content -->
     <main class="app-main">
-      <div class="screen screen-centered">
-        <div style="max-width: 800px; width: 100%;">
+      <div class="screen screen-full" style="padding: var(--space-6);">
+        <div class="container" style="max-width: var(--max-width-xl);">
           
-          <!-- Hero Section -->
-          <div style="text-align: center; margin-bottom: var(--space-8);">
-            <h1 style="font-size: var(--font-size-4xl); font-weight: 700; margin-bottom: var(--space-2); line-height: 1.2;">
-              Build MCP Servers with AI
-            </h1>
-            <p style="font-size: var(--font-size-xl); color: var(--color-text-secondary); margin-bottom: var(--space-1);">
-              Describe your tool in plain English. Get production-ready MCP server code with built-in compliance checks.
-            </p>
+          <div class="progress-steps" id="progress-indicator">
+            <div class="progress-step">
+              <div class="step-circle active" id="step-generate">1</div>
+              <div class="step-label active">Generate</div>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="progress-step">
+              <div class="step-circle pending" id="step-scan">2</div>
+              <div class="step-label">Scan</div>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="progress-step">
+              <div class="step-circle pending" id="step-report">3</div>
+              <div class="step-label">Report</div>
+            </div>
           </div>
 
-          <!-- Main Input Card -->
-          <div class="card" style="padding: var(--space-4); margin-bottom: var(--space-4);">
-            
-            <!-- Prompt Input -->
-            <div style="margin-bottom: var(--space-3);">
-              <label for="prompt-input" style="display: block; font-weight: 500; margin-bottom: var(--space-2); font-size: var(--font-size-base);">
-                Describe your MCP tool
-              </label>
-              <textarea 
-                id="prompt-input" 
-                class="input textarea" 
-                placeholder="Example: Create an MCP server that fetches weather data from OpenWeather API, caches results for 10 minutes, and provides tools for current weather and 5-day forecast..."
-                style="min-height: 160px; font-size: var(--font-size-base);"
-              ></textarea>
+          <!-- Section 1: Input -->
+          <div id="section-input" class="section visible">
+            <div style="text-align: center; margin-bottom: var(--space-6);">
+              <h1 style="font-size: var(--font-size-4xl); font-weight: 700; margin-bottom: var(--space-2); line-height: 1.2;">Build MCP Servers with AI</h1>
+              <p style="font-size: var(--font-size-xl); color: var(--color-text-secondary);">Transform plain English into secure, compliant Model Context Protocol servers. Deploy to cloud with one click.</p>
             </div>
 
-            <!-- Compliance Profile -->
+            <div class="card" style="padding: var(--space-4); margin-bottom: var(--space-4); max-width: 800px; margin-left: auto; margin-right: auto;">
+              <div style="margin-bottom: var(--space-3);">
+                <label for="prompt-input" style="display: block; font-weight: 500; margin-bottom: var(--space-2);">Describe your MCP tool</label>
+                <textarea id="prompt-input" class="input textarea" placeholder="Example: Create an MCP server that fetches weather data from OpenWeather API, caches results for 10 minutes, and provides tools for current weather and 5-day forecast..." style="min-height: 160px;"></textarea>
+              </div>
+
+              <div style="margin-bottom: var(--space-4);">
+                <label for="compliance-select" style="display: block; font-weight: 500; margin-bottom: var(--space-2);">Compliance Profile</label>
+                <select id="compliance-select" class="input select">
+                  <option value="general">General - Standard best practices</option>
+                  <option value="gdpr">GDPR - EU data protection compliance</option>
+                  <option value="soc2">SOC 2 - Security and availability controls</option>
+                  <option value="hipaa">HIPAA - Healthcare data protection</option>
+                </select>
+              </div>
+
+              <button class="btn btn-primary btn-lg w-full" id="generate-btn" disabled>
+                <span>Generate MCP Server</span>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+
+            <div style="max-width: 800px; margin: 0 auto; margin-bottom: var(--space-16);">
+              <p style="font-size: var(--font-size-sm); font-weight: 600; color: var(--color-text-secondary); margin-bottom: var(--space-3); text-transform: uppercase; letter-spacing: 0.05em;">Try an example:</p>
+              <div style="display: flex; flex-wrap: wrap; gap: var(--space-3);">
+                <button class="example-prompt" style="padding: var(--space-2) var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); font-size: var(--font-size-sm); font-weight: 500; cursor: pointer; transition: all 0.2s ease;" data-prompt="Create an MCP server that connects to PostgreSQL, executes read-only queries, and returns results in JSON format">Database Query Tool</button>
+                <button class="example-prompt" style="padding: var(--space-2) var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); font-size: var(--font-size-sm); font-weight: 500; cursor: pointer; transition: all 0.2s ease;" data-prompt="Build an MCP server for safe file operations: read, write, list directories with permission checks and size limits">File System Manager</button>
+                <button class="example-prompt" style="padding: var(--space-2) var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); font-size: var(--font-size-sm); font-weight: 500; cursor: pointer; transition: all 0.2s ease;" data-prompt="Create an MCP server that integrates with Stripe API for payment processing, subscription management, and webhook handling">API Integration Hub</button>
+              </div>
+            </div>
+
+            <!-- Feature Cards -->
+            <div style="max-width: 1000px; margin: 0 auto;">
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6);">
+                <div class="card feature-card" style="padding: var(--space-6); border-radius: var(--radius-xl); cursor: default;">
+                  <div style="width: 48px; height: 48px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-4);">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgb(59, 130, 246)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                  </div>
+                  <h3 style="font-size: var(--font-size-lg); font-weight: 600; margin-bottom: var(--space-2);">Instant Generation</h3>
+                  <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); line-height: 1.6;">AI-powered code generation with enterprise best practices built in</p>
+                </div>
+                <div class="card feature-card" style="padding: var(--space-6); border-radius: var(--radius-xl); cursor: default;">
+                  <div style="width: 48px; height: 48px; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-4);">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgb(34, 197, 94)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                  </div>
+                  <h3 style="font-size: var(--font-size-lg); font-weight: 600; margin-bottom: var(--space-2);">Compliance Ready</h3>
+                  <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); line-height: 1.6;">Automated security scanning and compliance validation</p>
+                </div>
+                <div class="card feature-card" style="padding: var(--space-6); border-radius: var(--radius-xl); cursor: default;">
+                  <div style="width: 48px; height: 48px; background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.2); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-4);">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgb(168, 85, 247)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="2" y1="12" x2="22" y2="12"></line>
+                      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                  </div>
+                  <h3 style="font-size: var(--font-size-lg); font-weight: 600; margin-bottom: var(--space-2);">One-Click Deploy</h3>
+                  <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); line-height: 1.6;">Deploy to IBM Cloud infrastructure in seconds</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Progress -->
+          <div id="section-progress" class="section hidden">
+            <div style="max-width: 700px; margin: 0 auto;">
+              <div class="card" style="padding: var(--space-6);">
+                <div style="text-align: center; margin-bottom: var(--space-4);">
+                  <div style="width: 80px; height: 80px; margin: 0 auto var(--space-3); background: var(--color-primary-light); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <div class="spinner" style="width: 40px; height: 40px; border-width: 3px;"></div>
+                  </div>
+                  <h2 style="font-size: var(--font-size-3xl); font-weight: 700; margin-bottom: var(--space-2);">Generating Your MCP Server</h2>
+                  <p style="color: var(--color-text-secondary);">This usually takes 15-30 seconds</p>
+                </div>
+                <div class="progress-bar" style="margin-bottom: var(--space-4);">
+                  <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
+                </div>
+                <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary); text-align: center;" id="progress-status">Analyzing your requirements...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Code Preview -->
+          <div id="section-code" class="section hidden">
             <div style="margin-bottom: var(--space-4);">
-              <label for="compliance-select" style="display: block; font-weight: 500; margin-bottom: var(--space-2); font-size: var(--font-size-base);">
-                Compliance Profile
-              </label>
-              <select id="compliance-select" class="input select">
-                <option value="general">General - Standard best practices</option>
-                <option value="gdpr">GDPR - EU data protection compliance</option>
-                <option value="soc2">SOC 2 - Security and availability controls</option>
-                <option value="hipaa">HIPAA - Healthcare data protection</option>
-              </select>
+              <h2 style="font-size: var(--font-size-3xl); font-weight: 700; margin-bottom: var(--space-2);">Generated Code</h2>
+              <p style="color: var(--color-text-secondary);">Review your MCP server implementation</p>
             </div>
 
-            <!-- Generate Button -->
-            <button class="btn btn-primary btn-lg w-full" id="generate-btn">
-              <span>Generate MCP Server</span>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <div class="split-layout">
+              <div class="sidebar-panel">
+                <h3 style="font-size: var(--font-size-sm); font-weight: 600; color: var(--color-text-secondary); margin-bottom: var(--space-2); text-transform: uppercase; letter-spacing: 0.5px;">Project Files</h3>
+                <ul class="file-tree">
+                  <li class="file-tree-item active" data-file="server">
+                    <svg class="file-icon" viewBox="0 0 16 16" fill="none"><path d="M9 2H3C2.44772 2 2 2.44772 2 3V13C2 13.5523 2.44772 14 3 14H13C13.5523 14 14 13.5523 14 13V7L9 2Z" stroke="currentColor" stroke-width="1.5"/><path d="M9 2V7H14" stroke="currentColor" stroke-width="1.5"/></svg>
+                    <span>server.ts</span>
+                  </li>
+                  <li class="file-tree-item" data-file="schema">
+                    <svg class="file-icon" viewBox="0 0 16 16" fill="none"><path d="M9 2H3C2.44772 2 2 2.44772 2 3V13C2 13.5523 2.44772 14 3 14H13C13.5523 14 14 13.5523 14 13V7L9 2Z" stroke="currentColor" stroke-width="1.5"/><path d="M9 2V7H14" stroke="currentColor" stroke-width="1.5"/></svg>
+                    <span>schema.json</span>
+                  </li>
+                  <li class="file-tree-item" data-file="package">
+                    <svg class="file-icon" viewBox="0 0 16 16" fill="none"><path d="M9 2H3C2.44772 2 2 2.44772 2 3V13C2 13.5523 2.44772 14 3 14H13C13.5523 14 14 13.5523 14 13V7L9 2Z" stroke="currentColor" stroke-width="1.5"/><path d="M9 2V7H14" stroke="currentColor" stroke-width="1.5"/></svg>
+                    <span>package.json</span>
+                  </li>
+                  <li class="file-tree-item" data-file="readme">
+                    <svg class="file-icon" viewBox="0 0 16 16" fill="none"><path d="M9 2H3C2.44772 2 2 2.44772 2 3V13C2 13.5523 2.44772 14 3 14H13C13.5523 14 14 13.5523 14 13V7L9 2Z" stroke="currentColor" stroke-width="1.5"/><path d="M9 2V7H14" stroke="currentColor" stroke-width="1.5"/></svg>
+                    <span>README.md</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="content-panel">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-3);">
+                  <h3 style="font-size: var(--font-size-lg); font-weight: 600;" id="current-file-name">server.ts</h3>
+                  <button class="btn btn-secondary" id="copy-code-btn">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M5 5V3C5 2.44772 5.44772 2 6 2H13C13.5523 2 14 2.44772 14 3V10C14 10.5523 13.5523 11 13 11H11M3 5H10C10.5523 5 11 5.44772 11 6V13C11 13.5523 10.5523 14 10 14H3C2.44772 14 2 13.5523 2 13V6C2 5.44772 2.44772 5 3 5Z" stroke="currentColor" stroke-width="1.5"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="code-viewer" id="code-content">
+                  <div class="code-line"><span class="line-number">1</span><span class="line-content"><span class="keyword">import</span> { Server } <span class="keyword">from</span> <span class="string">'@modelcontextprotocol/sdk/server/index.js'</span>;</span></div>
+                  <div class="code-line"><span class="line-number">2</span><span class="line-content"><span class="keyword">import</span> { StdioServerTransport } <span class="keyword">from</span> <span class="string">'@modelcontextprotocol/sdk/server/stdio.js'</span>;</span></div>
+                  <div class="code-line"><span class="line-number">3</span><span class="line-content"></span></div>
+                  <div class="code-line"><span class="line-number">4</span><span class="line-content"><span class="comment">// Initialize MCP server</span></span></div>
+                  <div class="code-line"><span class="line-number">5</span><span class="line-content"><span class="keyword">const</span> server = <span class="keyword">new</span> <span class="function">Server</span>({</span></div>
+                  <div class="code-line"><span class="line-number">6</span><span class="line-content">  name: <span class="string">'weather-mcp-server'</span>,</span></div>
+                  <div class="code-line"><span class="line-number">7</span><span class="line-content">  version: <span class="string">'1.0.0'</span></span></div>
+                  <div class="code-line"><span class="line-number">8</span><span class="line-content">});</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: var(--space-4); display: flex; gap: var(--space-2); justify-content: flex-end;">
+              <button class="btn btn-secondary" id="download-btn">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M14 9V13C14 13.5523 13.5523 14 13 14H3C2.44772 14 2 13.5523 2 13V9M11 5L8 2M8 2L5 5M8 2V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Download ZIP
+              </button>
+              <button class="btn btn-primary" id="continue-to-compliance-btn">
+                Continue to Compliance
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Section 4: Compliance -->
+          <div id="section-compliance" class="section hidden">
+            <div style="margin-bottom: var(--space-4);">
+              <h2 style="font-size: var(--font-size-3xl); font-weight: 700; margin-bottom: var(--space-2);">Compliance Dashboard</h2>
+              <p style="color: var(--color-text-secondary);">Security, performance, and policy compliance analysis</p>
+            </div>
+
+            <div class="compliance-summary">
+              <div class="card summary-card">
+                <div class="score-circle">72</div>
+                <div class="summary-label">Overall Score</div>
+              </div>
+              <div class="card summary-card" style="border-top: 4px solid var(--color-success);">
+                <div class="summary-value" style="color: var(--color-success);">18</div>
+                <div class="summary-label">Passed</div>
+              </div>
+              <div class="card summary-card" style="border-top: 4px solid var(--color-warning);">
+                <div class="summary-value" style="color: #8e6a00;">5</div>
+                <div class="summary-label">Warnings</div>
+              </div>
+              <div class="card summary-card" style="border-top: 4px solid var(--color-error);">
+                <div class="summary-value" style="color: var(--color-error);">2</div>
+                <div class="summary-label">Failed</div>
+              </div>
+            </div>
+
+            <div id="ready-banner" class="ready-banner hidden">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="flex-shrink: 0;">
+                <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="var(--color-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-            </button>
+              <div style="flex: 1;">
+                <div style="font-weight: 600; color: var(--color-success); margin-bottom: 4px;">All Issues Resolved!</div>
+                <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">Your MCP server is ready for deployment</div>
+              </div>
+            </div>
+
+            <div class="card" style="padding: var(--space-4); margin-bottom: var(--space-4);">
+              <h3 style="font-size: var(--font-size-lg); font-weight: 600; margin-bottom: var(--space-3);">Issues Found</h3>
+              <div class="issue-item critical" id="issue-1" data-issue-id="1">
+                <span class="badge badge-error" data-badge>CRITICAL</span>
+                <div style="flex: 1;">
+                  <div class="issue-title">Missing Input Validation</div>
+                  <div class="issue-description">User input is not validated before processing. Add schema validation for all tool inputs.</div>
+                  <button class="btn btn-primary fix-btn" data-issue="1" style="margin-top: var(--space-2); font-size: var(--font-size-sm); padding: 6px 12px;">Apply Fix</button>
+                  <div class="fix-progress hidden" data-progress></div>
+                </div>
+              </div>
+              <div class="issue-item critical" id="issue-2" data-issue-id="2">
+                <span class="badge badge-error" data-badge>CRITICAL</span>
+                <div style="flex: 1;">
+                  <div class="issue-title">API Key Exposed in Code</div>
+                  <div class="issue-description">API key is hardcoded. Use environment variables for sensitive credentials.</div>
+                  <button class="btn btn-primary fix-btn" data-issue="2" style="margin-top: var(--space-2); font-size: var(--font-size-sm); padding: 6px 12px;">Apply Fix</button>
+                  <div class="fix-progress hidden" data-progress></div>
+                </div>
+              </div>
+              <div class="issue-item warning" id="issue-3" data-issue-id="3">
+                <span class="badge badge-warning" data-badge>WARNING</span>
+                <div style="flex: 1;">
+                  <div class="issue-title">Missing Error Handling</div>
+                  <div class="issue-description">API calls are not wrapped in try-catch blocks. Add proper error handling.</div>
+                  <button class="btn btn-secondary fix-btn" data-issue="3" style="margin-top: var(--space-2); font-size: var(--font-size-sm); padding: 6px 12px;">Apply Fix</button>
+                  <div class="fix-progress hidden" data-progress></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: var(--space-2); justify-content: flex-end;">
+              <button class="btn btn-secondary" id="back-to-code-btn">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Back to Code
+              </button>
+              <button class="btn btn-primary" id="continue-to-deploy-btn">
+                Continue to Deployment
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
           </div>
 
-          <!-- Example Prompts -->
-          <div style="margin-bottom: var(--space-6);">
-            <h3 style="font-size: var(--font-size-sm); font-weight: 600; color: var(--color-text-secondary); margin-bottom: var(--space-2); text-transform: uppercase; letter-spacing: 0.5px;">
-              Example Prompts
-            </h3>
-            <div style="display: grid; gap: var(--space-2);">
-              
-              <button class="card card-hover example-prompt" style="text-align: left; border: 1px solid var(--color-border); cursor: pointer; padding: var(--space-2);">
-                <div style="font-weight: 500; margin-bottom: 4px; font-size: var(--font-size-sm);">
-                  Database Query Tool
+          <!-- Section 5: Deployment -->
+          <div id="section-deployment" class="section hidden">
+            <div style="max-width: 800px; margin: 0 auto;">
+              <div id="pre-deploy">
+                <div style="text-align: center; margin-bottom: var(--space-6);">
+                  <h2 style="font-size: var(--font-size-3xl); font-weight: 700; margin-bottom: var(--space-2);">Deploy to IBM Cloud</h2>
+                  <p style="color: var(--color-text-secondary);">Your MCP server is ready to deploy</p>
                 </div>
-                <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">
-                  Create an MCP server that connects to PostgreSQL, executes read-only queries, and returns results in JSON format
-                </div>
-              </button>
 
-              <button class="card card-hover example-prompt" style="text-align: left; border: 1px solid var(--color-border); cursor: pointer; padding: var(--space-2);">
-                <div style="font-weight: 500; margin-bottom: 4px; font-size: var(--font-size-sm);">
-                  File System Manager
+                <div class="card" style="padding: var(--space-4); margin-bottom: var(--space-4);">
+                  <h3 style="font-size: var(--font-size-lg); font-weight: 600; margin-bottom: var(--space-3);">Deployment Configuration</h3>
+                  <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+                    <div>
+                      <label style="display: block; font-weight: 500; margin-bottom: var(--space-1); font-size: var(--font-size-sm);">Region</label>
+                      <select class="input select">
+                        <option>us-south (Dallas)</option>
+                        <option>us-east (Washington DC)</option>
+                        <option>eu-gb (London)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style="display: block; font-weight: 500; margin-bottom: var(--space-1); font-size: var(--font-size-sm);">Instance Size</label>
+                      <select class="input select">
+                        <option>Small (1 vCPU, 2GB RAM)</option>
+                        <option selected>Medium (2 vCPU, 4GB RAM)</option>
+                        <option>Large (4 vCPU, 8GB RAM)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style="display: block; font-weight: 500; margin-bottom: var(--space-1); font-size: var(--font-size-sm);">Server Name</label>
+                      <input type="text" class="input" value="weather-mcp-server" placeholder="my-mcp-server">
+                    </div>
+                  </div>
                 </div>
-                <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">
-                  Build an MCP server for safe file operations: read, write, list directories with permission checks and size limits
-                </div>
-              </button>
 
-              <button class="card card-hover example-prompt" style="text-align: left; border: 1px solid var(--color-border); cursor: pointer; padding: var(--space-2);">
-                <div style="font-weight: 500; margin-bottom: 4px; font-size: var(--font-size-sm);">
-                  API Integration Hub
-                </div>
-                <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">
-                  Create an MCP server that integrates with Stripe API for payment processing, subscription management, and webhook handling
-                </div>
-              </button>
-
-            </div>
-          </div>
-
-          <!-- Features Grid -->
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); margin-bottom: var(--space-4);">
-            
-            <div style="text-align: center;">
-              <div style="width: 48px; height: 48px; background: var(--color-primary-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-2);">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="var(--color-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+                <button class="btn btn-primary btn-lg w-full" id="deploy-btn">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 10H17M17 10L12 5M17 10L12 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Deploy to IBM Cloud
+                </button>
               </div>
-              <div style="font-weight: 600; margin-bottom: 4px; font-size: var(--font-size-sm);">AI-Powered</div>
-              <div style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">Generate complete servers in seconds</div>
-            </div>
 
-            <div style="text-align: center;">
-              <div style="width: 48px; height: 48px; background: var(--color-success-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-2);">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="var(--color-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+              <div id="deployed" class="hidden">
+                <div class="card" style="padding: var(--space-6);">
+                  <div class="deployment-status">
+                    <div class="status-icon">
+                      <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M8 20L16 28L32 12" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <h2 style="font-size: var(--font-size-2xl); font-weight: 700; margin-bottom: var(--space-2);">Deployment Successful!</h2>
+                    <p style="color: var(--color-text-secondary); margin-bottom: var(--space-4);">Your MCP server is now live and ready to use</p>
+                  </div>
+
+                  <div style="margin-bottom: var(--space-4);">
+                    <label style="display: block; font-weight: 600; margin-bottom: var(--space-2); font-size: var(--font-size-sm);">Live URL</label>
+                    <div class="url-display">
+                      <span class="url-text">https://weather-mcp-server.us-south.cf.appdomain.cloud</span>
+                      <button class="btn btn-secondary" onclick="copyUrl()">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M5 5V3C5 2.44772 5.44772 2 6 2H13C13.5523 2 14 2.44772 14 3V10C14 10.5523 13.5523 11 13 11H11M3 5H10C10.5523 5 11 5.44772 11 6V13C11 13.5523 10.5523 14 10 14H3C2.44772 14 2 13.5523 2 13V6C2 5.44772 2.44772 5 3 5Z" stroke="currentColor" stroke-width="1.5"/></svg>
+                        Copy
+                      </button>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: var(--space-2);">
+                    <button class="btn btn-secondary flex-1" onclick="window.location.href='../index.html'">Back to Home</button>
+                    <button class="btn btn-primary flex-1" id="new-project-btn">Create New Server</button>
+                  </div>
+                </div>
               </div>
-              <div style="font-weight: 600; margin-bottom: 4px; font-size: var(--font-size-sm);">Compliance Ready</div>
-              <div style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">Built-in security and policy checks</div>
             </div>
-
-            <div style="text-align: center;">
-              <div style="width: 48px; height: 48px; background: var(--color-info-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-2);">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16" stroke="var(--color-info)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-              <div style="font-weight: 600; margin-bottom: 4px; font-size: var(--font-size-sm);">One-Click Deploy</div>
-              <div style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">Deploy to IBM Cloud instantly</div>
-            </div>
-
           </div>
 
         </div>
@@ -157,27 +669,225 @@
   </div>
 
   <script>
-    // Example prompt click handlers
-    document.querySelectorAll('.example-prompt').forEach(button => {
-      button.addEventListener('click', function() {
-        const promptText = this.querySelector('div:last-child').textContent;
-        document.getElementById('prompt-input').value = promptText;
+    let currentSection = 'input';
+    let resolvedIssues = new Set();
+    
+    function showSection(section) {
+      document.querySelectorAll('.section').forEach(s => {
+        s.classList.remove('visible');
+        s.classList.add('hidden');
+      });
+      document.getElementById(`section-${section}`).classList.remove('hidden');
+      setTimeout(() => document.getElementById(`section-${section}`).classList.add('visible'), 50);
+      currentSection = section;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    function updateProgressIndicator(step) {
+      const steps = { generate: 1, scan: 2, report: 3 };
+      Object.keys(steps).forEach(s => {
+        const circle = document.getElementById(`step-${s}`);
+        const label = circle.nextElementSibling;
+        if (steps[s] < steps[step]) {
+          circle.classList.remove('pending', 'active');
+          circle.classList.add('complete');
+          label.classList.remove('active');
+        } else if (steps[s] === steps[step]) {
+          circle.classList.remove('pending', 'complete');
+          circle.classList.add('active');
+          label.classList.add('active');
+        } else {
+          circle.classList.remove('active', 'complete');
+          circle.classList.add('pending');
+          label.classList.remove('active');
+        }
+      });
+    }
+    
+    // Enable/disable Generate button based on input
+    const promptInput = document.getElementById('prompt-input');
+    const generateBtn = document.getElementById('generate-btn');
+    
+    promptInput.addEventListener('input', function() {
+      if (this.value.trim()) {
+        generateBtn.disabled = false;
+      } else {
+        generateBtn.disabled = true;
+      }
+    });
+    
+    document.querySelectorAll('.example-prompt').forEach(btn => {
+      btn.addEventListener('click', function() {
+        promptInput.value = this.dataset.prompt;
+        promptInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        promptInput.focus();
+        generateBtn.disabled = false;
       });
     });
-
-    // Generate button handler
-    document.getElementById('generate-btn').addEventListener('click', function() {
-      const prompt = document.getElementById('prompt-input').value;
-      const compliance = document.getElementById('compliance-select').value;
-      
-      if (!prompt.trim()) {
+    
+    generateBtn.addEventListener('click', function() {
+      if (!promptInput.value.trim()) {
         alert('Please enter a prompt describing your MCP tool');
         return;
       }
-      
-      // Navigate to progress screen
-      window.location.href = 'progress.html';
+      this.classList.add('loading');
+      this.disabled = true;
+      setTimeout(() => {
+        showSection('progress');
+        updateProgressIndicator('scan');
+        simulateProgress();
+      }, 500);
     });
+    
+    // Fix issue flow
+    document.querySelectorAll('.fix-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const issueId = this.dataset.issue;
+        const issueCard = document.getElementById(`issue-${issueId}`);
+        const badge = issueCard.querySelector('[data-badge]');
+        const progress = issueCard.querySelector('[data-progress]');
+        
+        // Start fixing
+        this.classList.add('loading');
+        this.disabled = true;
+        this.textContent = 'Applying Fix...';
+        issueCard.classList.add('fixing');
+        
+        // Show progress steps
+        progress.classList.remove('hidden');
+        const steps = ['Applying fix', 'Updating code', 'Re-running compliance scan'];
+        let stepIndex = 0;
+        
+        const stepInterval = setInterval(() => {
+          if (stepIndex < steps.length) {
+            progress.innerHTML = `<div class="spinner"></div><span>${steps[stepIndex]}...</span>`;
+            stepIndex++;
+          } else {
+            clearInterval(stepInterval);
+            
+            // Complete the fix
+            setTimeout(() => {
+              issueCard.classList.remove('fixing', 'critical', 'warning');
+              issueCard.classList.add('resolved');
+              badge.className = 'badge badge-success';
+              badge.textContent = 'RESOLVED';
+              this.classList.remove('loading', 'btn-primary', 'btn-secondary');
+              this.classList.add('btn-secondary', 'completed');
+              this.textContent = '✓ Issue Resolved';
+              this.disabled = true;
+              progress.classList.add('hidden');
+              
+              // Track resolved issues
+              resolvedIssues.add(issueId);
+              
+              // Update summary counts
+              updateComplianceSummary();
+              
+              // Check if all critical issues are resolved
+              checkAllIssuesResolved();
+            }, 500);
+          }
+        }, 1000);
+      });
+    });
+    
+    function updateComplianceSummary() {
+      const totalIssues = 3;
+      const resolved = resolvedIssues.size;
+      const remaining = totalIssues - resolved;
+      
+      // Update the summary cards (simplified for demo)
+      const passedCard = document.querySelector('.compliance-summary .card:nth-child(2) .summary-value');
+      const failedCard = document.querySelector('.compliance-summary .card:nth-child(4) .summary-value');
+      
+      if (passedCard) passedCard.textContent = 18 + resolved;
+      if (failedCard) failedCard.textContent = Math.max(0, 2 - resolved);
+    }
+    
+    function checkAllIssuesResolved() {
+      const totalCriticalIssues = 2; // We have 2 critical issues
+      const criticalResolved = Array.from(resolvedIssues).filter(id => ['1', '2'].includes(id)).length;
+      
+      if (criticalResolved === totalCriticalIssues) {
+        // Show ready banner
+        const banner = document.getElementById('ready-banner');
+        banner.classList.remove('hidden');
+      }
+    }
+    
+    function simulateProgress() {
+      const progressFill = document.getElementById('progress-fill');
+      const progressStatus = document.getElementById('progress-status');
+      let progress = 0;
+      const statuses = ['Analyzing your requirements...', 'Generating server code...', 'Creating configuration files...', 'Running compliance scan...', 'Finalizing code...'];
+      let statusIndex = 0;
+      
+      const interval = setInterval(() => {
+        progress += 5;
+        progressFill.style.width = progress + '%';
+        if (progress % 20 === 0 && statusIndex < statuses.length) {
+          progressStatus.textContent = statuses[statusIndex++];
+        }
+        if (progress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            showSection('code');
+            updateProgressIndicator('report');
+          }, 500);
+        }
+      }, 150);
+    }
+    
+    document.querySelectorAll('.file-tree-item').forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.file-tree-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById('current-file-name').textContent = this.querySelector('span').textContent;
+      });
+    });
+    
+    document.getElementById('copy-code-btn').addEventListener('click', function() {
+      this.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied!';
+      setTimeout(() => {
+        this.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M5 5V3C5 2.44772 5.44772 2 6 2H13C13.5523 2 14 2.44772 14 3V10C14 10.5523 13.5523 11 13 11H11M3 5H10C10.5523 5 11 5.44772 11 6V13C11 13.5523 10.5523 14 10 14H3C2.44772 14 2 13.5523 2 13V6C2 5.44772 2.44772 5 3 5Z" stroke="currentColor" stroke-width="1.5"/></svg> Copy';
+      }, 2000);
+    });
+    
+    document.getElementById('download-btn').addEventListener('click', function() {
+      this.classList.add('loading');
+      setTimeout(() => {
+        this.classList.remove('loading');
+        this.classList.add('completed');
+        this.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Downloaded';
+        setTimeout(() => {
+          this.classList.remove('completed');
+          this.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M14 9V13C14 13.5523 13.5523 14 13 14H3C2.44772 14 2 13.5523 2 13V9M11 5L8 2M8 2L5 5M8 2V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Download ZIP';
+        }, 2000);
+      }, 1500);
+    });
+    
+    document.getElementById('continue-to-compliance-btn').addEventListener('click', () => showSection('compliance'));
+    document.getElementById('back-to-code-btn').addEventListener('click', () => showSection('code'));
+    document.getElementById('continue-to-deploy-btn').addEventListener('click', () => showSection('deployment'));
+    
+    document.getElementById('deploy-btn').addEventListener('click', function() {
+      this.classList.add('loading');
+      this.disabled = true;
+      setTimeout(() => {
+        document.getElementById('pre-deploy').classList.add('hidden');
+        document.getElementById('deployed').classList.remove('hidden');
+      }, 2000);
+    });
+    
+    document.getElementById('new-project-btn').addEventListener('click', () => location.reload());
+    
+    function copyUrl() {
+      const btn = event.target.closest('button');
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied!';
+      setTimeout(() => {
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M5 5V3C5 2.44772 5.44772 2 6 2H13C13.5523 2 14 2.44772 14 3V10C14 10.5523 13.5523 11 13 11H11M3 5H10C10.5523 5 11 5.44772 11 6V13C11 13.5523 10.5523 14 10 14H3C2.44772 14 2 13.5523 2 13V6C2 5.44772 2.44772 5 3 5Z" stroke="currentColor" stroke-width="1.5"/></svg> Copy';
+      }, 2000);
+    }
   </script>
 </body>
 </html>

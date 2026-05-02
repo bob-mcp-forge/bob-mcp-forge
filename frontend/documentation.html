@@ -186,10 +186,16 @@
                 <a href="#getting-started" class="docs-nav-link">Getting Started</a>
               </li>
               <li class="docs-nav-item">
+                <a href="#system-architecture" class="docs-nav-link">System Architecture</a>
+              </li>
+              <li class="docs-nav-item">
+                <a href="#generation-pipeline" class="docs-nav-link">Generation Pipeline</a>
+              </li>
+              <li class="docs-nav-item">
                 <a href="#how-it-works" class="docs-nav-link">How It Works</a>
               </li>
               <li class="docs-nav-item">
-                <a href="#compliance" class="docs-nav-link">Compliance Checks</a>
+                <a href="#compliance" class="docs-nav-link">Compliance</a>
               </li>
               <li class="docs-nav-item">
                 <a href="#file-structure" class="docs-nav-link">File Structure</a>
@@ -198,7 +204,7 @@
                 <a href="#deployment" class="docs-nav-link">Deployment</a>
               </li>
               <li class="docs-nav-item">
-                <a href="#examples" class="docs-nav-link">Example Prompts</a>
+                <a href="#examples" class="docs-nav-link">Examples</a>
               </li>
               <li class="docs-nav-item">
                 <a href="#troubleshooting" class="docs-nav-link">Troubleshooting</a>
@@ -231,6 +237,73 @@
                 </div>
               </div>
             </div>
+
+            <h3>The Enterprise Trust Gap</h3>
+            <p>
+              Bob MCP Forge addresses a critical enterprise challenge: organizations face two major obstacles when adopting MCP technology.
+            </p>
+            <ul>
+              <li><strong>Non-developers cannot easily build MCP tools:</strong> Creating MCP servers requires deep technical knowledge of TypeScript, the MCP protocol, and best practices. Business users and domain experts who understand the requirements cannot translate their needs into working code.</li>
+              <li><strong>Security officers distrust unverified AI-generated code:</strong> While AI can generate code quickly, enterprises cannot deploy it without rigorous security scanning, compliance validation, and governance oversight. The risk of vulnerabilities, data leaks, or policy violations is too high.</li>
+            </ul>
+
+            <h3>How Bob MCP Forge Solves This</h3>
+            <p>
+              Bob MCP Forge bridges the Trust Gap by combining AI-powered creation with enterprise-grade governance in a single platform:
+            </p>
+
+            <div style="display: grid; gap: var(--space-3); margin-bottom: var(--space-3);">
+              
+              <div class="card" style="padding: var(--space-3); border-left: 4px solid var(--color-primary);">
+                <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
+                  <strong style="color: var(--color-primary);">1. Plain English Prompt</strong>
+                </div>
+                <p style="margin: 0; font-size: var(--font-size-sm);">
+                  Anyone can describe what they need in natural language. No coding required.
+                </p>
+              </div>
+
+              <div class="card" style="padding: var(--space-3); border-left: 4px solid var(--color-primary);">
+                <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
+                  <strong style="color: var(--color-primary);">2. Bob Generation</strong>
+                </div>
+                <p style="margin: 0; font-size: var(--font-size-sm);">
+                  AI generates production-ready TypeScript code following MCP protocol standards and security best practices.
+                </p>
+              </div>
+
+              <div class="card" style="padding: var(--space-3); border-left: 4px solid var(--color-primary);">
+                <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
+                  <strong style="color: var(--color-primary);">3. Compliance Scan</strong>
+                </div>
+                <p style="margin: 0; font-size: var(--font-size-sm);">
+                  Automated security, performance, and policy checks identify issues before deployment. Supports GDPR, SOC 2, and HIPAA profiles.
+                </p>
+              </div>
+
+              <div class="card" style="padding: var(--space-3); border-left: 4px solid var(--color-primary);">
+                <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
+                  <strong style="color: var(--color-primary);">4. Apply Fix Remediation</strong>
+                </div>
+                <p style="margin: 0; font-size: var(--font-size-sm);">
+                  One-click fixes for compliance issues. No manual code editing required.
+                </p>
+              </div>
+
+              <div class="card" style="padding: var(--space-3); border-left: 4px solid var(--color-primary);">
+                <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
+                  <strong style="color: var(--color-primary);">5. One-Click IBM Cloud Deployment</strong>
+                </div>
+                <p style="margin: 0; font-size: var(--font-size-sm);">
+                  Containerized deployment to IBM Cloud with automatic provisioning, health checks, and monitoring.
+                </p>
+              </div>
+
+            </div>
+
+            <p>
+              This end-to-end workflow ensures that MCP servers are both easy to create and safe to deploy, making AI-powered development accessible to enterprises without compromising security or compliance.
+            </p>
 
             <h3>Key Features</h3>
             <ul>
@@ -288,63 +361,274 @@
             </div>
           </section>
 
-          <!-- How It Works -->
-          <section id="how-it-works" class="docs-section">
-            <h2>How Bob MCP Forge Works</h2>
+          <!-- System Architecture -->
+          <section id="system-architecture" class="docs-section">
+            <h2>System Architecture</h2>
             <p>
-              Bob MCP Forge uses advanced AI to understand your requirements and generate production-ready code. Here's what happens behind the scenes:
+              Bob MCP Forge is built as a monorepo with clearly separated concerns, enabling scalability, maintainability, and independent deployment of components.
             </p>
 
-            <h3>1. Understanding Your Request</h3>
+            <h3>Architecture Components</h3>
+            <div style="display: grid; gap: var(--space-3); margin-bottom: var(--space-3);">
+              
+              <div class="card" style="padding: var(--space-3);">
+                <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;">
+                    <rect x="2" y="2" width="16" height="16" rx="2" stroke="var(--color-primary)" stroke-width="1.5"/>
+                    <path d="M6 6H14M6 10H14M6 14H10" stroke="var(--color-primary)" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                  <strong>Frontend UI (React)</strong>
+                </div>
+                <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+                  User interface for describing tools, viewing generated code, reviewing compliance reports, and managing deployments. Built with React and modern CSS.
+                </p>
+              </div>
+
+              <div class="card" style="padding: var(--space-3);">
+                <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;">
+                    <circle cx="10" cy="10" r="8" stroke="var(--color-primary)" stroke-width="1.5"/>
+                    <path d="M10 6V10L13 13" stroke="var(--color-primary)" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                  <strong>Orchestrator API (Express)</strong>
+                </div>
+                <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+                  RESTful API that coordinates generation requests, manages job lifecycle, and handles deployment operations. Exposes endpoints for frontend communication.
+                </p>
+              </div>
+
+              <div class="card" style="padding: var(--space-3);">
+                <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;">
+                    <path d="M4 6L10 2L16 6V14L10 18L4 14V6Z" stroke="var(--color-primary)" stroke-width="1.5" stroke-linejoin="round"/>
+                    <path d="M10 2V18" stroke="var(--color-primary)" stroke-width="1.5"/>
+                  </svg>
+                  <strong>Generator Service (TypeScript)</strong>
+                </div>
+                <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+                  Core generation engine that transforms natural language descriptions into MCP server code. Uses string templates and Zod validation for type-safe generation.
+                </p>
+              </div>
+
+              <div class="card" style="padding: var(--space-3);">
+                <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;">
+                    <rect x="3" y="3" width="14" height="14" rx="2" stroke="var(--color-primary)" stroke-width="1.5"/>
+                    <path d="M7 7H13M7 10H13M7 13H10" stroke="var(--color-primary)" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                  <strong>Job Store (SQLite / Memory)</strong>
+                </div>
+                <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+                  Persistent storage for generation jobs, status tracking, and metadata. Supports both SQLite for production and in-memory for development.
+                </p>
+              </div>
+
+              <div class="card" style="padding: var(--space-3);">
+                <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;">
+                    <path d="M7 3H13L17 7V17H3V7L7 3Z" stroke="var(--color-primary)" stroke-width="1.5" stroke-linejoin="round"/>
+                    <path d="M7 3V7H3" stroke="var(--color-primary)" stroke-width="1.5" stroke-linejoin="round"/>
+                  </svg>
+                  <strong>Generated MCP Server Artifacts</strong>
+                </div>
+                <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+                  Output files including server.ts, schema.json, package.json, Dockerfile, and README.md. Ready for deployment or local development.
+                </p>
+              </div>
+
+            </div>
+
+            <h3>Request Flow</h3>
             <p>
-              The AI analyzes your prompt to identify:
+              When a user generates an MCP server, the following sequence occurs:
+            </p>
+            <ol class="step-list">
+              <li>
+                <strong>Frontend sends POST /api/v1/generate</strong><br>
+                User submits tool description and compliance profile to the Orchestrator API.
+              </li>
+              <li>
+                <strong>Orchestrator triggers generation</strong><br>
+                API validates the request, creates a job record, and invokes the Generator Service.
+              </li>
+              <li>
+                <strong>Generator emits MCP server files</strong><br>
+                Generator Service processes the description, applies templates, and produces all necessary files.
+              </li>
+              <li>
+                <strong>Job persisted to store</strong><br>
+                Generated files and metadata are saved to the Job Store for retrieval and deployment.
+              </li>
+            </ol>
+
+            <h3>Generator Internals</h3>
+            <p>
+              The Generator Service uses a template-based approach with validation:
             </p>
             <ul>
-              <li>Required MCP tools and their parameters</li>
-              <li>Data sources and API integrations</li>
-              <li>Authentication and security requirements</li>
-              <li>Error handling and validation needs</li>
-              <li>Performance and caching strategies</li>
+              <li><strong>String Templates:</strong> Pre-built templates for common MCP patterns (API integration, database access, file operations)</li>
+              <li><strong>Zod Validation:</strong> Runtime type checking ensures generated code matches expected schemas</li>
+              <li><strong>Security Policies:</strong> Automatic injection of input validation, error handling, and rate limiting</li>
+              <li><strong>Best Practices:</strong> TypeScript strict mode, structured logging, and comprehensive error messages</li>
             </ul>
 
-            <h3>2. Code Generation</h3>
-            <p>
-              Based on your requirements, Bob MCP Forge generates:
-            </p>
-            <ul>
-              <li><strong>server.ts:</strong> Main MCP server implementation with TypeScript</li>
-              <li><strong>schema.json:</strong> MCP protocol schema definitions</li>
-              <li><strong>package.json:</strong> Node.js dependencies and scripts</li>
-              <li><strong>Dockerfile:</strong> Container configuration for deployment</li>
-              <li><strong>README.md:</strong> Documentation and usage instructions</li>
-            </ul>
-
-            <h3>3. Compliance Scanning</h3>
-            <p>
-              Every generated server is automatically scanned for:
-            </p>
-            <ul>
-              <li><strong>Security Issues:</strong> Input validation, API key exposure, authentication</li>
-              <li><strong>Performance:</strong> Rate limiting, caching, resource management</li>
-              <li><strong>Code Quality:</strong> TypeScript strict mode, error handling, logging</li>
-              <li><strong>Policy Compliance:</strong> GDPR, SOC 2, HIPAA requirements (based on selected profile)</li>
-            </ul>
-
-            <h3>4. Deployment Preparation</h3>
-            <p>
-              Bob MCP Forge prepares your server for deployment by:
-            </p>
-            <ul>
-              <li>Building a Docker container image</li>
-              <li>Configuring environment variables</li>
-              <li>Setting up health checks</li>
-              <li>Provisioning IBM Cloud resources</li>
-            </ul>
+            <div class="card" style="padding: var(--space-4); margin-top: var(--space-4); text-align: center;">
+              <img src="documentation-images/Bob MCP Forge Monorepo.webp" alt="Bob MCP Forge Monorepo Architecture" style="width: 100%; max-width: 720px; height: auto; border-radius: var(--radius-md); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+              <p style="margin-top: var(--space-2); font-size: var(--font-size-sm); color: var(--color-text-secondary); text-align: center;">
+                Bob MCP Forge Monorepo Architecture
+              </p>
+            </div>
           </section>
 
-          <!-- Compliance Checks -->
+          <!-- Generation Pipeline -->
+          <section id="generation-pipeline" class="docs-section">
+            <h2>Generation Pipeline</h2>
+            <p>
+              The Generator Service follows a multi-stage pipeline to transform natural language descriptions into production-ready MCP servers.
+            </p>
+
+            <h3>Pipeline Stages</h3>
+            <div style="display: grid; gap: var(--space-3); margin-bottom: var(--space-3);">
+              
+              <div class="card" style="padding: var(--space-3); border-left: 4px solid var(--color-success);">
+                <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
+                  <span style="background: var(--color-success); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: var(--font-size-sm);">1</span>
+                  <strong>Input Manager</strong>
+                </div>
+                <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+                  Receives and sanitizes the tool description. Extracts key requirements such as tool names, parameters, data sources, and authentication needs. Validates input against security policies.
+                </p>
+              </div>
+
+              <div class="card" style="padding: var(--space-3); border-left: 4px solid var(--color-success);">
+                <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
+                  <span style="background: var(--color-success); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: var(--font-size-sm);">2</span>
+                  <strong>Template Library</strong>
+                </div>
+                <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+                  Provides base templates for different MCP server types. Includes templates for API integrations, database queries, file operations, and custom business logic. Each template follows MCP protocol standards.
+                </p>
+              </div>
+
+              <div class="card" style="padding: var(--space-3); border-left: 4px solid var(--color-success);">
+                <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
+                  <span style="background: var(--color-success); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: var(--font-size-sm);">3</span>
+                  <strong>Template Engine</strong>
+                </div>
+                <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+                  Applies security policies and best practices to templates. Injects input validation, error handling, rate limiting, and logging. Ensures compliance with selected profile (GDPR, SOC 2, HIPAA).
+                </p>
+              </div>
+
+              <div class="card" style="padding: var(--space-3); border-left: 4px solid var(--color-success);">
+                <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
+                  <span style="background: var(--color-success); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: var(--font-size-sm);">4</span>
+                  <strong>Output Formatter</strong>
+                </div>
+                <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+                  Emits final files with proper formatting and structure. Generates server.ts, schema.json, package.json, Dockerfile, and README.md. Ensures all files are syntactically correct and ready for deployment.
+                </p>
+              </div>
+
+            </div>
+
+            <div class="card" style="padding: var(--space-4); margin-top: var(--space-4); text-align: center;">
+              <img src="documentation-images/MCP Generator Service.webp" alt="MCP Generator Internal Pipeline" style="width: 100%; max-width: 720px; height: auto; border-radius: var(--radius-md); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+              <p style="margin-top: var(--space-2); font-size: var(--font-size-sm); color: var(--color-text-secondary); text-align: center;">
+                MCP Generator Internal Pipeline
+              </p>
+            </div>
+
+            <h3>End-to-End Flow</h3>
+            <p>
+              From developer input to running MCP server:
+            </p>
+            <ol class="step-list">
+              <li>
+                <strong>Developer/LLM provides tool description</strong><br>
+                Natural language description of desired MCP server functionality, including tools, parameters, and requirements.
+              </li>
+              <li>
+                <strong>MCP Generator applies templates and logic</strong><br>
+                Generator Service processes the description through the pipeline stages, applying templates, security policies, and best practices.
+              </li>
+              <li>
+                <strong>Generated project files are emitted</strong><br>
+                Complete MCP server project with all necessary files (TypeScript source, configuration, Docker setup, documentation).
+              </li>
+              <li>
+                <strong>Build System runs npm install && npm run build</strong><br>
+                Dependencies are installed and TypeScript is compiled to JavaScript. Build artifacts are prepared for execution.
+              </li>
+              <li>
+                <strong>MCP Host registers server over stdio</strong><br>
+                MCP host (like Claude Desktop) connects to the server via standard input/output, establishing the communication channel.
+              </li>
+              <li>
+                <strong>Tool can be invoked via MCP</strong><br>
+                AI assistant can now discover and invoke the tools provided by the MCP server, enabling new capabilities.
+              </li>
+            </ol>
+
+            <div class="card" style="padding: var(--space-3); background: var(--color-info-light); border: 1px solid var(--color-info); margin-top: var(--space-3);">
+              <div style="display: flex; gap: var(--space-2);">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0; margin-top: 2px;">
+                  <path d="M10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18Z" stroke="var(--color-info)" stroke-width="1.5"/>
+                  <path d="M10 14V10M10 6H10.01" stroke="var(--color-info)" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <div>
+                  <div style="font-weight: 600; margin-bottom: 4px; color: var(--color-info);">Pipeline Performance</div>
+                  <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+                    The entire generation pipeline typically completes in 15-30 seconds, depending on the complexity of the tool description and the number of tools being generated.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="padding: var(--space-4); margin-top: var(--space-4); text-align: center;">
+              <img src="documentation-images/Sequence Diagram.webp" alt="End-to-End MCP Generation and Deployment Flow" style="width: 100%; max-width: 720px; height: auto; border-radius: var(--radius-md); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+              <p style="margin-top: var(--space-2); font-size: var(--font-size-sm); color: var(--color-text-secondary); text-align: center;">
+                End-to-End MCP Generation and Deployment Flow
+              </p>
+            </div>
+          </section>
+
+          <!-- How It Works -->
+          <section id="how-it-works" class="docs-section">
+            <h2>How It Works</h2>
+            <p>
+              Bob MCP Forge provides a streamlined user experience from prompt to deployment. Here's the user-facing workflow:
+            </p>
+
+            <h3>1. Describe Your Tool</h3>
+            <p>
+              Enter a natural language description of your desired MCP server functionality. The AI analyzes your prompt to identify required tools, parameters, data sources, authentication needs, and error handling requirements.
+            </p>
+
+            <h3>2. Select Compliance Profile</h3>
+            <p>
+              Choose from General, GDPR, SOC 2, or HIPAA compliance profiles. This ensures your generated code meets specific regulatory and security standards from the start.
+            </p>
+
+            <h3>3. Review Generated Code</h3>
+            <p>
+              Browse the complete MCP server project including server.ts, schema.json, package.json, Dockerfile, and README.md. All files are production-ready and follow best practices.
+            </p>
+
+            <h3>4. Check Compliance</h3>
+            <p>
+              Review automated security, performance, and policy scans. Apply one-click fixes for any issues identified by the compliance engine.
+            </p>
+
+            <h3>5. Deploy to IBM Cloud</h3>
+            <p>
+              Configure deployment settings and launch your MCP server with a single click. Bob MCP Forge handles containerization, provisioning, and health checks automatically.
+            </p>
+          </section>
+
+          <!-- Compliance -->
           <section id="compliance" class="docs-section">
-            <h2>Compliance Checks</h2>
+            <h2>Compliance</h2>
             <p>
               Bob MCP Forge performs comprehensive compliance scanning on all generated code. Issues are categorized by severity:
             </p>
@@ -544,7 +828,7 @@ server.<span class="function">setRequestHandler</span>(ListToolsRequestSchema, <
 
           <!-- Examples -->
           <section id="examples" class="docs-section">
-            <h2>Example Prompts</h2>
+            <h2>Examples</h2>
             <p>
               Here are some example prompts to help you get started:
             </p>
