@@ -1,0 +1,87 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Bob MCP Forge — Docker Compose
+# ─────────────────────────────────────────────────────────────────────────────
+# Usage:
+#   docker compose up                # frontend + api + mongo
+#   docker compose --profile tools up # also includes policy-engine + generator
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ── Frontend ───────────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:80"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  # ── API ───────────────────────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: ./backend/api/Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: ${PORT:-3001}
+      MONGODB_URI: ${MONGODB_URI:-mongodb://mongo:27017/bob-mcp-forge}
+      BOB_API_KEY: ${BOB_API_KEY:-}
+      BOB_API_URL: ${BOB_API_URL:-https://bob.ibm.com}
+      # Leave MONGODB_URI empty only when you intentionally want API mock mode.
+    depends_on:
+      mongo:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ── MongoDB (optional persistence) ───────────────────────────────────────────
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ── Policy Engine (standalone MCP stdio service) ────────────────────────────
+  policy-engine:
+    build:
+      context: ./backend/policy-engine
+      dockerfile: Dockerfile
+    profiles:
+      - tools
+    # Run via stdin/stdout MCP protocol — designed to be used as a subprocess
+    stdin_open: true
+    tty: true
+
+  # ── Generator (demo/tooling CLI) ─────────────────────────────────────────────
+  generator:
+    build:
+      context: ./backend/generator
+      dockerfile: Dockerfile
+    profiles:
+      - tools
+    # Interactive demo: generates an MCP server from a description
+    stdin_open: true
+    tty: true
+
+volumes:
+  mongo_data:
+    driver: local

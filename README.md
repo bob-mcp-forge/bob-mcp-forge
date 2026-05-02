@@ -110,6 +110,29 @@ Mapped to the **4 judging criteria** (5 points each, 20 total):
 | Deployment | IBM Cloud Code Engine | Container-based, free tier |
 | Repo | GitHub Org | TBD — invite emails coming |
 
+## 🐳 Docker Quick Start
+
+Run the full local stack with Docker Compose:
+
+```bash
+cp .env.example .env
+docker compose up
+```
+
+- Frontend: http://localhost:8080
+- API: http://localhost:3001
+- Health check: http://localhost:3001/health
+
+Test generation + compliance audit:
+
+```bash
+curl -X POST http://localhost:3001/api/v1/generate \
+  -H "Content-Type: application/json" \
+  -d '{"description":"Tool that stores api key","complianceProfile":"soc2"}'
+```
+
+See [DOCKER.md](./DOCKER.md) for service details, environment variables, deployment checklist, and troubleshooting.
+
 ---
 
 ## 📅 3-Day Plan (May 1-3)
