@@ -636,13 +636,17 @@
     function renderResults(data) {
       const tree = document.getElementById('file-tree');
       const badge = document.getElementById('gen-mode-badge');
-      
+
+      // Defensive: default missing metadata to 'unknown' so section transition is not blocked
+      const mode = (data && data.metadata && data.metadata.generationMode) || 'unknown';
+      const files = (data && data.files) || [];
+
       tree.innerHTML = '';
-      badge.innerHTML = `<span class="badge badge-${data.metadata.generationMode === 'bob' ? 'success' : 'info'}">
-        Mode: ${data.metadata.generationMode.toUpperCase()}
+      badge.innerHTML = `<span class="badge badge-${mode === 'bob' ? 'success' : 'info'}">
+        Mode: ${mode.toUpperCase()}
       </span>`;
 
-      data.files.forEach((file, index) => {
+      files.forEach((file, index) => {
         const li = document.createElement('li');
         li.className = `file-tree-item ${index === 0 ? 'active' : ''}`;
         li.innerHTML = `
@@ -657,7 +661,7 @@
         tree.appendChild(li);
       });
 
-      if (data.files.length > 0) displayFile(data.files[0]);
+      if (files.length > 0) displayFile(files[0]);
     }
 
     function displayFile(file) {
@@ -681,7 +685,7 @@
     }
 
     document.getElementById('copy-code-btn').onclick = function() {
-      const activeFile = generatedData.files.find(f => f.path === document.getElementById('current-file-name').textContent);
+      const activeFile = (generatedData?.files || []).find(f => f.path === document.getElementById('current-file-name').textContent);
       if (activeFile) {
         navigator.clipboard.writeText(activeFile.content);
         this.textContent = '✓ Copied!';

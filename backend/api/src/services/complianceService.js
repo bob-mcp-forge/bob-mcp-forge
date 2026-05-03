@@ -71,14 +71,36 @@ async function runComplianceAudit({ description, files, complianceProfile = 'gen
 
   const result = await runWrapper(input);
 
+  // Normalize wrapper output to { generatedFiles: File[], metadata: object }.
+  // Handles new shape, legacy shapes (flat and nested), raw arrays, and fileArray fallback.
+  let generatedFiles = Array.isArray(fileArray) ? fileArray : [];
+  let metadata = {};
+
+  if (Array.isArray(result)) {
+    generatedFiles = result;
+  } else if (result.generatedFiles) {
+    if (Array.isArray(result.generatedFiles)) {
+      generatedFiles = result.generatedFiles;
+      metadata = result.metadata || {};
+    } else if (typeof result.generatedFiles === 'object') {
+      // nested { files, metadata } inside generatedFiles
+      generatedFiles = Array.isArray(result.generatedFiles.files) ? result.generatedFiles.files : [];
+      metadata = result.generatedFiles.metadata || result.metadata || {};
+    }
+  } else if (Array.isArray(result.files)) {
+    generatedFiles = result.files;
+    metadata = result.metadata || {};
+  }
+
   return {
     jobId,
     status: 'audit_complete',
-    auditResult: result.auditResult,
-    generatedFiles: result.generatedFiles || fileArray,
+    auditResult: result.auditResult || {},
+    generatedFiles,
+    metadata,
     complianceProfile,
     userId,
-    message: result.generatedFiles ? 'MCP server generated and audited successfully' : 'Compliance audit complete',
+    message: generatedFiles.length > 0 ? 'MCP server generated and audited successfully' : 'Compliance audit complete',
   };
 }
 

@@ -26,5 +26,5 @@ if (files && files.length > 0) {
   // Generate then audit
   const output = await generateMcpServer({ description, context: { complianceProfile } });
   const auditResult = auditCode({ files: output.files });
-  console.log(JSON.stringify({ generatedFiles: output.files, auditResult }));
+  console.log(JSON.stringify({ files: output.files, metadata: output.metadata, auditResult }));
 }

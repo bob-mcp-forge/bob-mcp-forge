@@ -62,7 +62,7 @@ router.post('/', async (req, res) => {
       userId: req.userId || null,
     });
 
-    await Job.updateGeneration(job.jobId, 'completed', { files: auditResult.generatedFiles });
+    await Job.updateGeneration(job.jobId, 'completed', { files: auditResult.generatedFiles, metadata: auditResult.metadata });
     await Job.updateCompliance(job.jobId, 'completed', auditResult.auditResult);
     await Job.updateStatus(job.jobId, 'generated', 100);
     
