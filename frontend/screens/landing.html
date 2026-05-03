@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -642,9 +642,18 @@
       const files = (data && data.files) || [];
 
       tree.innerHTML = '';
-      badge.innerHTML = `<span class="badge badge-${mode === 'bob' ? 'success' : 'info'}">
-        Mode: ${mode.toUpperCase()}
-      </span>`;
+      
+      // Safely handle metadata
+      if (data.metadata && data.metadata.generationMode) {
+        badge.innerHTML = `<span class="badge badge-${data.metadata.generationMode === 'bob' ? 'success' : 'info'}">
+          Mode: ${data.metadata.generationMode.toUpperCase()}
+        </span>`;
+      }
+
+      if (!data.files || data.files.length === 0) {
+        console.error('No files in generated data');
+        return;
+      }
 
       files.forEach((file, index) => {
         const li = document.createElement('li');
