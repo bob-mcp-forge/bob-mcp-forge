@@ -638,9 +638,18 @@
       const badge = document.getElementById('gen-mode-badge');
       
       tree.innerHTML = '';
-      badge.innerHTML = `<span class="badge badge-${data.metadata.generationMode === 'bob' ? 'success' : 'info'}">
-        Mode: ${data.metadata.generationMode.toUpperCase()}
-      </span>`;
+      
+      // Safely handle metadata
+      if (data.metadata && data.metadata.generationMode) {
+        badge.innerHTML = `<span class="badge badge-${data.metadata.generationMode === 'bob' ? 'success' : 'info'}">
+          Mode: ${data.metadata.generationMode.toUpperCase()}
+        </span>`;
+      }
+
+      if (!data.files || data.files.length === 0) {
+        console.error('No files in generated data');
+        return;
+      }
 
       data.files.forEach((file, index) => {
         const li = document.createElement('li');
